@@ -1,0 +1,35 @@
+
+meta:
+    extract_upstream: false
+
+tasks:
+  - source: process_data.py
+    name: 'Preprocess features'
+    product: 
+      nb: './output/process_data.ipynb'
+      train_csv: './data/train.csv'
+      test_csv: './data/test.csv'
+    params:
+      file_train_data: 'train_products.json'
+      file_test_data: 'test_products.json'
+
+  - source: train_xgboost.py
+    upstream: [Preprocess features]
+    name: Train xgboost
+    product:
+      nb: './output/train_xgboost.ipynb'
+      result: './predictions/result_xgboost.json'
+
+  - source: train_rf.py
+    upstream: [Preprocess features]
+    name: Train random forest
+    product:
+      nb: './output/train_rf.ipynb'
+      result: './predictions/result_rf.json'
+
+  - source: train_nn.py
+    upstream: [Preprocess features]
+    name: Train NN
+    product:
+      nb: './output/train_nn.ipynb'
+      result: './predictions/result_nn.json'
